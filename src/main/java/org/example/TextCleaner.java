@@ -36,7 +36,9 @@ public class TextCleaner {
             writer.newLine();
         }
 
-
+        // Закрываем файлы
+        reader.close();
+        writer.close();
     }
 
     public static String replaceNames(String line) {
