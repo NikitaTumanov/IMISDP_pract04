@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 public class TextCleaner {
 
     public static void main(String[] args) {
-        String inputFile = "src/main/java/org/example/input.txt";
-        String outputFile = "src/main/java/org/example/output.txt";
+        String inputFile = "src/main/resources/input.txt";
+        String outputFile = "src/main/resources/output.txt";
 
         try {
             cleanConfidentialData(inputFile, outputFile);
