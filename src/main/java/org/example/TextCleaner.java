@@ -15,7 +15,7 @@ public class TextCleaner {
         }
     }
 
-    private static void cleanConfidentialData(String inputFile, String outputFile) throws IOException {
+    public static void cleanConfidentialData(String inputFile, String outputFile) throws IOException {
         // Открываем файлы для чтения и записи
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
@@ -41,19 +41,19 @@ public class TextCleaner {
         writer.close();
     }
 
-    private static String replaceNames(String line) {
+    public static String replaceNames(String line) {
         // Заменяем имена и фамилии (первая буква заглавная, за ней следуют одна или несколько букв)
         String regex = "\\b[A-Z][a-z]+\\s[A-Z][a-z]+\\b";
         return line.replaceAll(regex, "[censored]");
     }
 
-    private static String replacePhoneNumbers(String line) {
+    public static String replacePhoneNumbers(String line) {
         // Заменяем номера телефонов (формат xxx-xxx-xxxx)
         String regex = "\\b\\d{3}-\\d{3}-\\d{4}\\b";
         return line.replaceAll(regex, "[censored]");
     }
 
-    private static String replaceLocations(String line) {
+    public static String replaceLocations(String line) {
         // Заменяем географические данные (названия городов, штатов, стран и т.п.)
         String regex = "\\b([A-Z][a-z]+(\\s[A-Z][a-z]+)*)\\b";
         return line.replaceAll(regex, "[censored]");
