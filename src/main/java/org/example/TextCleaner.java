@@ -1,11 +1,5 @@
 package org.example;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
 
 public class TextCleaner {
 
@@ -22,19 +16,23 @@ public class TextCleaner {
     }
 
     private static void cleanConfidentialData(String inputFile, String outputFile) throws IOException {
-        // Открываем файл для чтения
+        // Открываем файлы для чтения и записи
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-
-        // Открываем файл для записи
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 
         String line;
         while ((line = reader.readLine()) != null) {
-            // Заменяем конфиденциальные данные в текущей строке
-            String cleanedLine = cleanLine(line);
+            // Заменяем имена и фамилии на [censored]
+            line = replaceNames(line);
+
+            // Заменяем номера телефонов на [censored]
+            line = replacePhoneNumbers(line);
+
+            // Заменяем географические данные на [censored]
+            line = replaceLocations(line);
 
             // Записываем очищенную строку в выходной файл
-            writer.write(cleanedLine);
+            writer.write(line);
             writer.newLine();
         }
 
@@ -43,21 +41,21 @@ public class TextCleaner {
         writer.close();
     }
 
-    private static String cleanLine(String line) {
-        // Задаем шаблоны для поиска конфиденциальных данных
-        Pattern namePattern = Pattern.compile("[A-Z][a-z]+\\s[A-Z][a-z]+"); // Поиск имени и фамилии
-        Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}"); // Поиск номера телефона
-        Pattern locationPattern = Pattern.compile("\\d+\\s[A-Z][a-z]+\\s[A-Z][a-z]+"); // Поиск географической локации
+    private static String replaceNames(String line) {
+        // Заменяем имена и фамилии (первая буква заглавная, за ней следуют одна или несколько букв)
+        String regex = "\\b[A-Z][a-z]+\\s[A-Z][a-z]+\\b";
+        return line.replaceAll(regex, "[censored]");
+    }
 
-        Matcher matcher = namePattern.matcher(line);
-        line = matcher.replaceAll("[censored]");
+    private static String replacePhoneNumbers(String line) {
+        // Заменяем номера телефонов (формат xxx-xxx-xxxx)
+        String regex = "\\b\\d{3}-\\d{3}-\\d{4}\\b";
+        return line.replaceAll(regex, "[censored]");
+    }
 
-        matcher = phonePattern.matcher(line);
-        line = matcher.replaceAll("[censored]");
-
-        matcher = locationPattern.matcher(line);
-        line = matcher.replaceAll("[censored]");
-
-        return line;
+    private static String replaceLocations(String line) {
+        // Заменяем географические данные (названия городов, штатов, стран и т.п.)
+        String regex = "\\b([A-Z][a-z]+(\\s[A-Z][a-z]+)*)\\b";
+        return line.replaceAll(regex, "[censored]");
     }
 }
