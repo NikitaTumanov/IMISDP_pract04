@@ -46,8 +46,12 @@ public class TextCleaner {
     private static String cleanLine(String line) {
         // Задаем шаблоны для поиска конфиденциальных данных
         Pattern namePattern = Pattern.compile("[A-Z][a-z]+\\s[A-Z][a-z]+"); // Поиск имени и фамилии
+        Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}"); // Поиск номера телефона
 
         Matcher matcher = namePattern.matcher(line);
+        line = matcher.replaceAll("[censored]");
+
+        matcher = phonePattern.matcher(line);
         line = matcher.replaceAll("[censored]");
 
         return line;
