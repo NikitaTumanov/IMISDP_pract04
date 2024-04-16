@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TextCleaner {
 
@@ -26,8 +28,28 @@ public class TextCleaner {
         // Открываем файл для записи
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Заменяем конфиденциальные данные в текущей строке
+            String cleanedLine = cleanLine(line);
+
+            // Записываем очищенную строку в выходной файл
+            writer.write(cleanedLine);
+            writer.newLine();
+        }
+
         // Закрываем файлы
         reader.close();
         writer.close();
+    }
+
+    private static String cleanLine(String line) {
+        // Задаем шаблоны для поиска конфиденциальных данных
+        Pattern namePattern = Pattern.compile("[A-Z][a-z]+\\s[A-Z][a-z]+"); // Поиск имени и фамилии
+
+        Matcher matcher = namePattern.matcher(line);
+        line = matcher.replaceAll("[censored]");
+
+        return line;
     }
 }
