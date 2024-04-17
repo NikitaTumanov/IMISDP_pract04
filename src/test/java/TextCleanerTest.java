@@ -58,4 +58,40 @@ public class TextCleanerTest {
         inputFile.delete();
         outputFile.delete();
     }
+
+    @Test
+    public void testCleanConfidentialDataMultiLine() throws IOException {
+        // Создаем временный входной файл с несколькими строками текста
+        File inputFile = File.createTempFile("input", ".txt");
+        BufferedWriter writer = new BufferedWriter(new FileWriter(inputFile));
+        writer.write("I am John Doe. I can be reached at 123-456-7890.\n");
+        writer.write("I live in London, England and love to travel to Paris, France.");
+        writer.close();
+
+        // Создаем временный выходной файл
+        File outputFile = File.createTempFile("output", ".txt");
+
+        // Вызываем метод cleanConfidentialData для временных файлов
+        TextCleaner.cleanConfidentialData(inputFile.getAbsolutePath(), outputFile.getAbsolutePath());
+
+        // Считываем очищенные данные из выходного файла
+        BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+        StringBuilder cleanedText = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            cleanedText.append(line).append("\n");
+        }
+        reader.close();
+
+        // Ожидаемый результат после очистки
+        String expectedText = "I am [censored]. I can be reached at [censored].\n" +
+                "I live in [censored], [censored] and love to travel to [censored], [censored].\n";
+
+        // Проверяем, что очищенный текст соответствует ожидаемому результату
+        assertEquals(expectedText, cleanedText.toString());
+
+        // Удаляем временные файлы после теста
+        inputFile.delete();
+        outputFile.delete();
+    }
 }
